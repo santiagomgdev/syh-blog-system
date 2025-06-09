@@ -1,12 +1,15 @@
+# Guía de Configuración de Migraciones
+
 ## Tabla de Contenido
 
-- [Initial Setup](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#initial-setup)
-- [Basic Operations](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#basic-operations)
-- [Working with SQLModel](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#working-with-sqlmodel)
-- [Common Migration Scenarios](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#common-migration-scenarios)
-- [Advanced Migration Techniques](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#advanced-migration-techniques)
-- [Troubleshooting](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#troubleshooting)
-- [Best Practices](https://claude.ai/chat/15a43565-f7af-4719-ab0d-3d7a0a839242#best-practices)
+- [Configuración Inicial](#configuración-inicial)
+- [Operaciones Básicas](#operaciones-básicas)
+- [Uso con SQLModel](#uso-con-sqlmodel)
+- [Escenarios Comunes de Migración](#escenarios-comunes-de-migración)
+- [Técnicas Avanzadas de Migración](#técnicas-avanzadas-de-migración)
+- [Solución de Problemas](#solución-de-problemas)
+- [Mejores Prácticas](#mejores-prácticas)
+- [Hoja de Referencia de Flujo de Trabajo de Migración](#hoja-de-referencia-de-flujo-de-trabajo-de-migración)
 
 ## Configuración Inicial
 
@@ -26,7 +29,7 @@ alembic init migrations
 
 Esto crea un directorio llamado `migrations` with the following structure:
 
-```
+``` txt
 migrations/
 ├── README
 ├── env.py
@@ -211,16 +214,16 @@ class Pais(SQLModel, table=True):
 
 1. Añade el campo:
 
-```python
-descripcion: Optional[str] = Field(default=None, description="Descripción del país")
-```
+    ```python
+    descripcion: Optional[str] = Field(default=None, description="Descripción del país")
+    ```
 
 2. Genera y aplica la migración:
 
-```bash
-alembic revision --autogenerate -m "Add descripcion field to Pais"
-alembic upgrade head
-```
+    ```bash
+    alembic revision --autogenerate -m "Add descripcion field to Pais"
+    alembic upgrade head
+    ```
 
 ### Creando un nuevo modelo
 
@@ -228,10 +231,10 @@ alembic upgrade head
 2. Importa en `env.py`
 3. Genera y aplica la migración:
 
-```bash
-alembic revision --autogenerate -m "Add new model"
-alembic upgrade head
-```
+    ```bash
+    alembic revision --autogenerate -m "Add new model"
+    alembic upgrade head
+    ```
 
 ### Solución al Error "sqlmodel not defined"
 
@@ -239,9 +242,9 @@ Si encuentras un error que dice "sqlmodel is not defined" en tu migración:
 
 1. Opción 1: Agrega la importación al archivo de migración:
 
-```python
-import sqlmodel
-```
+    ```python
+    import sqlmodel
+    ```
 
 2. Opción 2: Actualiza tu archivo `env.py` como se mostró en la sección de configuración inicial
 3. Opción 3: Usa los tipos de SQLAlchemy en su lugar:
@@ -258,29 +261,29 @@ Para entornos de producción, es más seguro ejecutar migraciones con el servido
 
 1. Detener el servidor
 
-```bash
-# Si se ejecuta con uvicorn directamente
-Ctrl+C
+    ```bash
+    # Si se ejecuta con uvicorn directamente
+    Ctrl+C
 
-# O si se ejecuta como un servicio
-sudo systemctl stop myapp
-```
+    # O si se ejecuta como un servicio
+    sudo systemctl stop myapp
+    ```
 
 2. Aplicar migraciones
 
-```bash
-alembic upgrade head
-```
+    ```bash
+    alembic upgrade head
+    ```
 
 3. Iniciar el servidor
 
-```bash
-# Con uvicorn
-uvicorn main:app --reload
+    ```bash
+    # Con uvicorn
+    uvicorn main:app --reload
 
-# O como un servicio
-sudo systemctl start myapp
-```
+    # O como un servicio
+    sudo systemctl start myapp
+    ```
 
 ### Integración con FastAPI para Desarrollo
 
@@ -382,25 +385,24 @@ def upgrade():
 ### Problemas Comunes y Soluciones
 
 1. **"sqlmodel is not defined"**: Agrega `import sqlmodel` al archivo de migración o actualiza `env.py` como se mostró anteriormente.
-    
+
 2. **Modelos no detectados**: Asegúrate de que los modelos estén importados en `env.py` y tengan `table=True`.
-    
+
 3. **Migraciones autogeneradas están vacías**: Verifica que:
-    
+
     - Los modelos estén correctamente importados en `env.py`
     - `target_metadata = SQLModel.metadata` esté configurado
     - Los modelos tengan `table=True`
 4. **"La base de datos de destino no está actualizada"**: Usa `alembic stamp head` para marcar el estado actual de la base de datos como actualizado.
-    
+
 5. **Errores de importación circular**: Usa `TYPE_CHECKING` para importar modelos relacionados:
-    
+
     ```python
     from typing import TYPE_CHECKING
     
     if TYPE_CHECKING:
         from .other_model import OtherModel
     ```
-    
 
 ## Mejores Prácticas
 
