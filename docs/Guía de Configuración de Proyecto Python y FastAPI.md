@@ -1,3 +1,5 @@
+# Guía de Configuración de Proyecto Python y FastAPI
+
 ## Paso 1: Instalar Python
 
 1. Ve al sitio web oficial de Python: [https://www.python.org/downloads/](https://www.python.org/downloads/)
@@ -98,6 +100,7 @@ uvicorn main:app --reload
 Visita [http://127.0.0.1:8000](http://127.0.0.1:8000) en tu navegador para ver tu API funcionando.
 
 También puedes revisar la documentación interactiva automática en [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
 ## Notas Adicionales
 
 ### Explicación del Entorno Virtual
