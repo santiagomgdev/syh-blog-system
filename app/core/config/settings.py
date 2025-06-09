@@ -31,7 +31,7 @@ class Settings(BaseSettings):
             return self.DATABASE_URL
         return f"mysql+pymysql://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
     
-    class Config:
+    class ConfigDict:
         env_file = ".env"
         case_sensitive = True
 
