@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "usuario_id": 1,
+    "titulo": "Bienvenidos al Blog SYH",
+    "enlace": "bienvenidos-al-blog-syh",
+    "contenido": "Este es nuestro primer post en el blog SYH. Aquí compartiremos contenido interesante sobre tecnología, programación y desarrollo web. Esperamos que disfruten de nuestro contenido y que les sea útil en sus proyectos.",
+    "resumen": "Post de bienvenida al blog SYH con información sobre los temas que cubriremos.",
+    "estado": "publicado",
+    "created_at": "2024-01-20T10:00:00Z",
+    "updated_at": "2024-01-20T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "usuario_id": 2,
+    "titulo": "Introducción a FastAPI",
+    "enlace": "introduccion-a-fastapi",
+    "contenido": "FastAPI es un moderno framework web para construir APIs con Python. En este post exploraremos sus características principales, cómo instalarlo y crear nuestra primera API. FastAPI ofrece alta performance, fácil uso y documentación automática.",
+    "resumen": "Una guía introductoria sobre FastAPI y sus principales características.",
+    "estado": "publicado",
+    "created_at": "2024-02-15T14:30:00Z",
+    "updated_at": "2024-02-15T14:30:00Z"
+  },
+  {
+    "id": 3,
+    "usuario_id": 3,
+    "titulo": "SQLAlchemy ORM Básico",
+    "enlace": "sqlalchemy-orm-basico",
+    "contenido": "SQLAlchemy es el ORM más popular de Python. En esta guía aprenderemos los conceptos básicos: modelos, relaciones, consultas y migraciones. Veremos ejemplos prácticos de cómo estructurar una base de datos usando SQLAlchemy.",
+    "resumen": "Conceptos básicos de SQLAlchemy ORM con ejemplos prácticos.",
+    "estado": "borrador",
+    "created_at": "2024-03-10T11:45:00Z",
+    "updated_at": "2024-03-10T11:45:00Z"
+  },
+  {
+    "id": 4,
+    "usuario_id": 2,
+    "titulo": "Mejores Prácticas en APIs REST",
+    "enlace": "mejores-practicas-apis-rest",
+    "contenido": "Las APIs REST son fundamentales en el desarrollo moderno. En este artículo revisaremos las mejores prácticas: nomenclatura de endpoints, códigos de estado HTTP, versionado, autenticación y documentación.",
+    "resumen": "Guía completa de mejores prácticas para el diseño de APIs REST.",
+    "estado": "publicado",
+    "created_at": "2024-04-05T16:20:00Z",
+    "updated_at": "2024-04-05T16:20:00Z"
+  },
+  {
+    "id": 5,
+    "usuario_id": 1,
+    "titulo": "Autenticación JWT en Python",
+    "enlace": "autenticacion-jwt-python",
+    "contenido": "JSON Web Tokens (JWT) son una forma segura de manejar autenticación en aplicaciones web. En este tutorial aprenderemos a implementar autenticación JWT desde cero, incluyendo generación de tokens, validación y refresh tokens.",
+    "resumen": "Tutorial completo sobre implementación de autenticación JWT en Python.",
+    "estado": "publicado",
+    "created_at": "2024-05-12T09:30:00Z",
+    "updated_at": "2024-05-12T09:30:00Z"
+  },
+  {
+    "id": 6,
+    "usuario_id": 3,
+    "titulo": "Docker para Desarrolladores Python",
+    "enlace": "docker-para-desarrolladores-python",
+    "contenido": "Docker ha revolucionado el desarrollo y despliegue de aplicaciones. En esta guía veremos cómo containerizar aplicaciones Python, crear Dockerfiles eficientes y usar docker-compose para entornos de desarrollo.",
+    "resumen": "Guía práctica de Docker enfocada en desarrollo con Python.",
+    "estado": "borrador",
+    "created_at": "2024-05-20T16:45:00Z",
+    "updated_at": "2024-05-20T16:45:00Z"
+  },
+  {
+    "id": 7,
+    "usuario_id": 2,
+    "titulo": "Testing en FastAPI con Pytest",
+    "enlace": "testing-fastapi-pytest",
+    "contenido": "Las pruebas son esenciales para mantener código de calidad. Aprenderemos a escribir tests para APIs FastAPI usando pytest, incluyendo test fixtures, mocking y pruebas de integración.",
+    "resumen": "Cómo escribir tests efectivos para aplicaciones FastAPI usando pytest.",
+    "estado": "publicado",
+    "created_at": "2024-06-01T11:15:00Z",
+    "updated_at": "2024-06-01T11:15:00Z"
+  },
+  {
+    "id": 8,
+    "usuario_id": 1,
+    "titulo": "Optimización de Consultas en SQLAlchemy",
+    "enlace": "optimizacion-consultas-sqlalchemy",
+    "contenido": "La performance de las consultas a base de datos es crucial para aplicaciones web. En este post veremos técnicas de optimización en SQLAlchemy: eager loading, lazy loading, índices y análisis de consultas SQL generadas.",
+    "resumen": "Técnicas avanzadas para optimizar el rendimiento de consultas en SQLAlchemy.",
+    "estado": "archivado",
+    "created_at": "2024-04-25T14:20:00Z",
+    "updated_at": "2024-04-25T14:20:00Z"
+  }
+]
