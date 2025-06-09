@@ -1,73 +1,57 @@
-# Plantilla FastAPI Python
+# Blog System API
 
-## Configuracion de la plantilla para usarse en git
+A modern blog platform built with FastAPI, SQLAlchemy, and MySQL.
 
-### Paso 1: Hacer un fork a este repositorio 
+## Features
 
-desde tu cuenta de github hacer un fork a este repositorio para que se cree en el proyecto syh-python-template en el dasborad
+- User authentication with JWT tokens
+- Blog post management
+- Comments system with threading
+- Role-based access control
+- Soft delete functionality
 
-### Paso 2: Hacer el repositorio una plantilla
+## Project Structure
 
-En el repositorio local ingresa a settings, activa la casilla Template repository  para hacer ese repositorio una plantilla
-
-## Paso 3: Crear un nuevo repositorio apartir de esta plantilla
-
-Ahora pára crear un repositorio nuevo apartir de esta plantilla, en la pestaña crear repositorio nuevo despliega las opciones de repository template
-seleciona el template que se acabo de crear
-
-## Configuracion del Proyecto 
-
-## Paso 1: Configuración Inicial
-
-Abre Git Bash y ejecuta:
-
-```bash
-# Crea un entorno virual
-python -m venv venv
-
-# Activa el entorno virtual en Git bash
-# Deberías ver `(venv)` al comienzo de tu línea de comandos, lo que indica que el entorno virtual está activo.
-source venv/Scripts/activate
-
-# Activa el entorno virtual en Git bash (Alternativa)
-. venv/Scripts/activate
+```
+app/
+├── core/           # Core application components
+│   ├── config/     # Configuration files
+│   ├── database/   # Database connection and setup
+│   └── models/     # SQLAlchemy models
+├── modules/        # Feature modules
+│   ├── apis/       # API endpoints
+│   ├── schemas/    # Pydantic schemas
+│   └── services/   # Business logic
+├── test/          # Test files
+└── utils/         # Utility functions
 ```
 
-Para Windows Powershell:
+## Setup
 
-```shell
-# Crea el directorio para el proyecto
-mkdir fastapi-project
-cd fastapi-project
-
-# Crea un entorno virual
+1. Create virtual environment:
+```bash
 python -m venv venv
-
-# Activa el entorno virtual en Windows Powershell
-# Deberías ver `(venv)` al comienzo de tu línea de comandos, lo que indica que el entorno virtual está activo.
-.\venv\Scripts\activate
-
-# Activa el entorno virtual en Simbolo del sistema (CMD)
-venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-## Paso 2: Instalar dependencias
-
-Con el entorno virtual activado:
-
+2. Install dependencies:
 ```bash
-# instala dependencias
 pip install -r requirements.txt
 ```
 
-## Paso 7: Ejecutar tu app de FastAPI
-
-En Git Bash, con el entorno virtual activado:
-
+3. Configure environment variables:
 ```bash
-uvicorn main:app --reload
+cp .env.example .env
+# Edit .env with your settings
 ```
 
-Visita [http://127.0.0.1:8000](http://127.0.0.1:8000) en tu navegador para ver tu API funcionando.
+4. Run the application:
+```bash
+uvicorn app.main:app --reload
+```
 
-También puedes revisar la documentación interactiva automática en [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+The API will be available at http://localhost:8000
+
+## API Documentation
+
+Visit http://localhost:8000/docs for interactive API documentation.
