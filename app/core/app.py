@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config.settings import settings
-# from app.core.database import create_tables
+from app.core.database import create_tables
 
 def create_app() -> FastAPI:
 
     # Inicializa tablas BD
-    # create_tables()
+    create_tables()
 
     # Crea Instancia de FastAPI
     app = FastAPI(
