@@ -3,7 +3,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # Configuracion BD
-    DATABASE_URL: str
+    DATABASE_URL: Optional[str] = None
     DATABASE_HOST: str
     DATABASE_PORT: int
     DATABASE_USER: str
@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     
     # Configuracion CORS
     ALLOWED_ORIGINS: list
+
+    @property
+    def database_url(self) -> str:
+        """Construye la URL de la base de datos si no se proporciona directamente"""
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+        return f"mysql+pymysql://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
     
     class Config:
         env_file = ".env"
