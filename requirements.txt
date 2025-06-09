@@ -6,4 +6,5 @@ sqlmodel==0.0.24
 uvicorn==0.34.2
 python-dotenv==1.1.0
 pydantic_settings==2.9.1 # Manejo de configuraciones
-# pymysql==1.1.1 # Conector MySQL
+pymysql==1.1.1 # Conector MySQL
+alembic==1.16.1 # Migraciones de base de datos
