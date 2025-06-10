@@ -90,3 +90,8 @@ docker-compose.override.yml
 # Windows
 Thumbs.db
 desktop.ini
+
+# Coverage files
+.coverage
+.coverage.*
+.pytest_cache/
