@@ -28,8 +28,9 @@ class UsuarioResponse(UsuarioBase):
     created_at: datetime
     ultimo_login: Optional[datetime] = None
     
-    class ConfigDict:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class UsuarioLogin(BaseModel):
     correo: EmailStr
