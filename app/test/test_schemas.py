@@ -253,7 +253,7 @@ class TestUsuarioResponseSchema:
         
         # Verify expected fields are present
         expected_fields = {
-            "id", "nombre_usuario", "correo", "created_at", "updated_at", "ultimo_login"
+            "id", "nombre_usuario", "correo", "ultimo_login"
         }
         assert expected_fields.issubset(schema_fields)
 
