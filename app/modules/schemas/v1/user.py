@@ -28,7 +28,7 @@ class UsuarioResponse(UsuarioBase):
     created_at: datetime
     ultimo_login: Optional[datetime] = None
     
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 class UsuarioLogin(BaseModel):
