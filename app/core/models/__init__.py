@@ -1,8 +1,7 @@
-from .base import Base, CustomBase, TimestampMixin, SoftDeleteMixin
+from .base import Base, TimestampMixin, SoftDeleteMixin
 
 __all__ = [
     "Base",
-    "CustomBase", 
     "TimestampMixin",
     "SoftDeleteMixin",
 ]

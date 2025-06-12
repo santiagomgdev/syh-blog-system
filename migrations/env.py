@@ -12,6 +12,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from app.core.config import settings
 from app.core.models.base import Base
+from app.core.models.auth.user import Usuario
+from app.core.models.auth.role import RolUsuario
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
