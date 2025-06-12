@@ -1,9 +1,9 @@
 from .user import Usuario
-# from .token import Token
 from .role import RolUsuario
+from .token import Token
 
 __all__ = [
     "Usuario",
-    # "Token", 
     "RolUsuario",
+    "Token",
 ]

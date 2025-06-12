@@ -13,7 +13,7 @@ class Usuario(Base, TimestampMixin):
     activo = Column(Boolean, default=True, nullable=False)
     ultimo_login = Column(DateTime, nullable=True)
     
-    # tokens = relationship("Token", back_populates="usuario", cascade="all, delete-orphan")
+    tokens = relationship("Token", back_populates="usuario", cascade="all, delete-orphan")
     roles = relationship("RolUsuario", back_populates="usuario", cascade="all, delete-orphan")
     # posts = relationship("Post", back_populates="usuario", cascade="all, delete-orphan")
     # comentarios = relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan")
