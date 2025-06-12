@@ -33,7 +33,7 @@ class UsuarioResponse(UsuarioBase):
     }
 
 class UsuarioLogin(BaseModel):
-    correo: EmailStr
+    nombre_usuario: str
     contrasena: str
 
 class TokenResponse(BaseModel):
