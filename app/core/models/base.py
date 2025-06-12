@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
 
@@ -13,8 +13,3 @@ class SoftDeleteMixin:
     
     def soft_delete(self):
         self.deleted_at = datetime.now()
-
-class CustomBase(Base):
-    __abstract__ = True
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)

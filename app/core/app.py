@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config.settings import settings
+from app.modules.router import router
 # from app.core.database import create_tables
 
 def create_app() -> FastAPI:
@@ -21,7 +22,10 @@ def create_app() -> FastAPI:
     
     return app
 
-def setup_routes(app: FastAPI) -> None:    
+def setup_routes(app: FastAPI) -> None:
+
+    app.include_router(router, prefix="/api/v1")
+
     @app.get("/")
     async def root():
         return {
