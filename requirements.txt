@@ -15,3 +15,4 @@ pytest-cov==6.1.1 # Cobertura de pruebas
 passlib[bcrypt]==1.7.4 # Manejo de contraseñas
 email-validator==2.2.0 # Validación de correos electrónicos
 psycopg2==2.9.10 # Conector PostgreSQL
+python-jose[cryptography]==3.5.0 # Manejo de JWT
