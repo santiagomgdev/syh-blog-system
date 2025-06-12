@@ -9,7 +9,7 @@ class Usuario(Base, TimestampMixin):
     nombre_usuario = Column(String(50), nullable=False, unique=True)
     correo = Column(String(100), nullable=False, unique=True, index=True)
     contrasena_hash = Column(String(255), nullable=False)
-    sal = Column(String(50), nullable=False)
+    sal = Column(String(100), nullable=False)
     activo = Column(Boolean, default=True, nullable=False)
     ultimo_login = Column(DateTime, nullable=True)
     
