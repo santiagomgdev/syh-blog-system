@@ -7,7 +7,7 @@ from app.core.database.connection import get_db
 from app.modules.repository.adapter.mysql.role import MysqlRolUsuarioRepository
 from app.modules.repository.adapter.mysql.token import MysqlTokenRepository
 from app.modules.repository.adapter.mysql.user import MysqlUsuarioRepository
-from app.modules.schemas.v1.token import TokenRefresh
+from app.modules.schemas.v1.token import TokenBase, TokenRefresh
 from app.modules.schemas.v1.user import UsuarioCreate, UsuarioResponse, TokenResponse, UsuarioLogin
 from app.modules.services.refresh import RefreshTokenService
 from app.modules.services.register import RegisterService
@@ -90,11 +90,11 @@ def login_user(
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@router.post("/refresh", status_code=200)
+@router.post("/refresh", response_model=TokenBase, status_code=200)
 def refresh_access_token(
     request: TokenRefresh,
     refresh_service: RefreshTokenService = Depends(get_refresh_token_service)
-):
+) -> TokenBase:
     """
     Endpoint para refrescar el access token usando un refresh token válido
     """
