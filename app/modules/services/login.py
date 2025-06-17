@@ -1,11 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, status
 
+from app.core.models.auth.token import Token
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
 from app.modules.repository.adapter.role_repository_interface import RolUsuarioRepositoryInterface
 from app.modules.repository.adapter.token_repository_interface import TokenRepositoryInterface
 from app.modules.schemas.v1.user import UsuarioLogin, TokenResponse, UsuarioResponse
 from app.utils.security import verify_password, create_access_token, create_refresh_token
+from app.core.config import settings
 
 
 class LoginService:
@@ -41,6 +43,8 @@ class LoginService:
     def login(self, login_data: UsuarioLogin) -> TokenResponse:
         # Authenticate user
         user = self.authenticate_user(login_data)
+
+        self.token_repository.revoke_user_token(user.id)  # Revoke any existing tokens
         
         # Create token payload
         token_data = {
@@ -53,17 +57,19 @@ class LoginService:
         access_token = create_access_token(token_data)
         refresh_token = create_refresh_token({"sub": str(user.id)})
 
-        self.token_repository.create(
-            usuario_id=user.id,
-            token_refresco=access_token,
-            expiracion=datetime.now() # Example expiration time (Pendiente por ajuste)
-        )
-
         if not access_token or not refresh_token:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error al generar los tokens"
             )
+
+        new_token = Token(
+            usuario_id=user.id,
+            token_refresco=refresh_token,
+            expira_en=datetime.now(timezone.utc) + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
+        )
+
+        self.token_repository.create(new_token)
         
         # Return response
         return TokenResponse(
