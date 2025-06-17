@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-class Token(BaseModel):
+class TokenBase(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
