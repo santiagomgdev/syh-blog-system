@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from app.core.models.auth.token import Token
 from app.modules.repository.adapter.token_repository_interface import TokenRepositoryInterface
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
+from app.modules.schemas.v1.token import TokenBase
 from app.utils.security import create_access_token, verify_token
 from app.core.config import settings
 
@@ -16,7 +17,7 @@ class RefreshTokenService:
         self.token_repository = token_repository
         self.user_repository = user_repository
 
-    def refresh_access_token(self, refresh_token: str) -> dict:
+    def refresh_access_token(self, refresh_token: str) -> TokenBase:
         """
         Genera un nuevo access token usando un refresh token válido
         """
@@ -29,7 +30,7 @@ class RefreshTokenService:
         
         # Verificar el JWT del refresh token
         payload = verify_token(refresh_token)
-        if not payload: # or payload.get("type") != "refresh": (Pendiente por implementar)
+        if not payload or payload.get("type") != "refresh":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Refresh token inválido"
@@ -53,7 +54,7 @@ class RefreshTokenService:
         
         new_access_token = create_access_token(token_data)
         
-        return {
-            "access_token": new_access_token,
-            "token_type": "bearer"
-        }
+        return TokenBase(
+            access_token=new_access_token,
+            refresh_token=refresh_token,
+        )
