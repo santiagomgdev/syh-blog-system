@@ -25,3 +25,8 @@ class TokenRepositoryInterface(RepositoryInterface[Token]):
     def is_token_valid(self, token_refresco: str) -> bool:
         """Verifica si un token es válido (existe, no está revocado y no ha expirado)"""
         pass
+
+    @abstractmethod
+    def revoke_user_token(self, token_refresco: str) -> bool:
+        """Revoca un token específico"""
+        pass

@@ -65,3 +65,18 @@ class MysqlTokenRepository(TokenRepositoryInterface):
         )
         result = self.db.execute(stmt).scalar_one_or_none()
         return result is not None
+    
+    def revoke_user_token(self, usuario_id: int) -> bool:
+        """Revoca todos los tokens de un usuario específico"""
+        stmt = select(Token).where(Token.usuario_id == usuario_id)
+        tokens = self.db.execute(stmt).scalars().all()
+        
+        if not tokens:
+            return False
+        
+        for token in tokens:
+            token.revocado = True
+        
+        self.db.commit()
+        return True
+        
