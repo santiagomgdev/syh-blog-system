@@ -1,14 +1,14 @@
 from fastapi import Depends, HTTPException
 
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
-from app.utils.security import oauth2_scheme, verify_token
+from app.utils.security import verify_token
 
 
 class UserService:
     def __init__(self, usuario_repository: UsuarioRepositoryInterface):
         self.usuario_repository = usuario_repository
 
-    def get_current_user(self, token: str = Depends(oauth2_scheme)):
+    def get_current_user(self, token: str):
         payload = verify_token(token)
         if payload is None:
             raise HTTPException(
