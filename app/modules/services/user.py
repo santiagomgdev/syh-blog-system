@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
-from app.utils.security import verify_token
+from app.utils.security import verify_token, verify_token
 
 
 class UserService:
@@ -31,5 +31,32 @@ class UserService:
                 status_code=404,
                 detail="Usuario no encontrado",
             )
+        
+        return user
+    
+    def get_user_from_token(self, access_token: str):
+        
+        """
+        Obtiene el usuario a partir del token de acceso.
+        """
+        credentials_exception = HTTPException(
+            status_code=401,
+            detail="Credenciales inválidas",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+        # Verifica Token
+        payload = verify_token(access_token)
+        if not payload:
+            raise credentials_exception
+        
+        # Obtiene usuario por BD
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+        
+        user = self.usuario_repository.get_by_id(user_id)
+        if user is None or not user.activo:
+            raise credentials_exception
         
         return user
