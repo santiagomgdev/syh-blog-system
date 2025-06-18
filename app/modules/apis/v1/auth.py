@@ -1,48 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import ValidationError
-from sqlalchemy.orm import Session
 
-from app.core.database.connection import get_db
-from app.modules.repository.adapter.mysql.role import MysqlRolUsuarioRepository
-from app.modules.repository.adapter.mysql.token import MysqlTokenRepository
-from app.modules.repository.adapter.mysql.user import MysqlUsuarioRepository
 from app.modules.schemas.v1.token import TokenBase, TokenRefresh
 from app.modules.schemas.v1.user import UsuarioCreate, UsuarioResponse, TokenResponse, UsuarioLogin
 from app.modules.services.refresh import RefreshTokenService
 from app.modules.services.register import RegisterService
 from app.modules.services.login import LoginService
+from app.modules.apis.dependencies import (
+    get_register_service,
+    get_login_service,
+    get_refresh_token_service
+)
 
 
 router = APIRouter()
-
-def get_user_repository(db: Session = Depends(get_db)) -> MysqlUsuarioRepository:
-    return MysqlUsuarioRepository(db)
-
-def get_role_repository(db: Session = Depends(get_db)) -> MysqlRolUsuarioRepository:
-    return MysqlRolUsuarioRepository(db)
-
-def get_token_repository(db: Session = Depends(get_db)) -> MysqlTokenRepository:
-    return MysqlTokenRepository(db)
-
-def get_register_service(
-    user_repository: MysqlUsuarioRepository = Depends(get_user_repository),
-    role_repository: MysqlRolUsuarioRepository = Depends(get_role_repository)
-) -> RegisterService:
-    return RegisterService(user_repository, role_repository)
-
-def get_login_service(
-    user_repository: MysqlUsuarioRepository = Depends(get_user_repository),
-    role_repository: MysqlRolUsuarioRepository = Depends(get_role_repository),
-    token_repository: MysqlTokenRepository = Depends(get_token_repository)
-) -> LoginService:
-    return LoginService(user_repository, role_repository, token_repository)
-
-def get_refresh_token_service(
-    token_repository: MysqlTokenRepository = Depends(get_token_repository),
-    user_repository: MysqlUsuarioRepository = Depends(get_user_repository)
-) -> RefreshTokenService:
-    return RefreshTokenService(token_repository, user_repository)
 
 @router.post("/register", response_model=UsuarioResponse, status_code=201)
 def register_user(
@@ -65,7 +37,7 @@ def register_user(
             detail=f"Error interno del servidor: {str(e)}"
         )
     
-@router.post("/login", response_model=TokenResponse, status_code=200)
+@router.post("/oauth/login", response_model=TokenResponse, status_code=200)
 def login_user(
     oauth_form_data: OAuth2PasswordRequestForm = Depends(),
     login_service: LoginService = Depends(get_login_service)
@@ -89,8 +61,41 @@ def login_user(
             status_code=500,
             detail=f"Error interno del servidor: {str(e)}"
         )
+    
+@router.post("/login", response_model=TokenResponse, status_code=200)
+def auth_user(
+    form_data: UsuarioLogin,
+    response: Response,
+    login_service: LoginService = Depends(get_login_service)
+) -> TokenResponse:
+    try:
+        result = login_service.login(form_data)
 
-@router.post("/refresh", response_model=TokenBase, status_code=200)
+        response.set_cookie(
+            key="refresh_token",
+            value=result.refresh_token,
+            # max_age=REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+            httponly=True,
+            secure=False,  # Set to False in development if not using HTTPS
+            samesite="lax"
+        )
+
+        return result
+    
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Error de validación: {str(e)}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error interno del servidor: {str(e)}"
+        )
+
+@router.post("/oauth/refresh", response_model=TokenBase, status_code=200)
 def refresh_access_token(
     request: TokenRefresh,
     refresh_service: RefreshTokenService = Depends(get_refresh_token_service)
@@ -100,6 +105,45 @@ def refresh_access_token(
     """
     try:
         return refresh_service.refresh_access_token(request.refresh_token)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error interno del servidor: {str(e)}"
+        )
+    
+@router.post("/refresh", response_model=TokenBase, status_code=200)
+def refresh_token(
+    request: Request,
+    response: Response,
+    refresh_service: RefreshTokenService = Depends(get_refresh_token_service)
+) -> TokenBase:
+    """
+    Endpoint para refrescar el access token usando un refresh token válido
+    """
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate refresh token"
+    )
+
+    refresh_token = request.cookies.get("refresh_token")
+    if not refresh_token:
+        raise credentials_exception
+
+    try:
+        result = refresh_service.refresh_access_token(refresh_token)
+
+        response.set_cookie(
+            key="refresh_token",
+            value=result.refresh_token,
+            httponly=True,
+            secure=False,  # Set to False in development if not using HTTPS
+            samesite="lax"
+        )
+
+        return result
+    
     except HTTPException:
         raise
     except Exception as e:
