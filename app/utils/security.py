@@ -2,9 +2,11 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 import bcrypt
 # from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from jose import JWTError, jwt
 from app.core.config import settings
+
+security = HTTPBearer(auto_error=False)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
