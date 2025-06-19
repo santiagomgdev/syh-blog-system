@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config.settings import settings
-from app.modules.router import router
+from app.modules.router.v1.router import router
+from app.modules.router.oauth.router import router as oauth_router
 # from app.core.database import create_tables
 
 def create_app() -> FastAPI:
@@ -24,6 +25,7 @@ def create_app() -> FastAPI:
 
 def setup_routes(app: FastAPI) -> None:
 
+    app.include_router(oauth_router, prefix="/api/v1")
     app.include_router(router, prefix="/api/v1")
 
     @app.get("/")
