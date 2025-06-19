@@ -1,13 +1,9 @@
-from datetime import datetime, timedelta
-from typing import Optional
-from fastapi import HTTPException, status
-
-from app.core.models.auth.token import Token
+from app.core.exceptions.auth import RefreshTokenError, TokenExpiredError, TokenGenerationError
+from app.core.exceptions.user import UserNotFoundError
 from app.modules.repository.adapter.token_repository_interface import TokenRepositoryInterface
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
 from app.modules.schemas.v1.token import TokenBase
 from app.utils.security import create_access_token, verify_token
-from app.core.config import settings
 
 
 class RefreshTokenService:
@@ -23,27 +19,18 @@ class RefreshTokenService:
         """
         # Verificar que el token existe en la base de datos y es válido
         if not self.token_repository.is_token_valid(refresh_token):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token inválido o expirado"
-            )
+            raise TokenExpiredError("Refresh token inválido o expirado")
         
         # Verificar el JWT del refresh token
         payload = verify_token(refresh_token)
         if not payload or payload.get("type") != "refresh":
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token inválido"
-            )
+            raise RefreshTokenError("Refresh token inválido o expirado")
         
         # Obtener el usuario
         user_id = payload.get("sub")
         user = self.user_repository.get_by_id(user_id)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Usuario no encontrado"
-            )
+            raise UserNotFoundError("Usuario no encontrado o inactivo")
         
         # Crear nuevo access token
         token_data = {
@@ -53,6 +40,8 @@ class RefreshTokenService:
         }
         
         new_access_token = create_access_token(token_data)
+        if not new_access_token:
+            raise TokenGenerationError("Error al generar el nuevo access token")
         
         return TokenBase(
             access_token=new_access_token,

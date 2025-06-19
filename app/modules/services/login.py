@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import HTTPException, status
 
+from app.core.exceptions.auth import InvalidCredentialsError, TokenGenerationError
 from app.core.models.auth.token import Token
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
 from app.modules.repository.adapter.role_repository_interface import RolUsuarioRepositoryInterface
@@ -23,17 +23,11 @@ class LoginService:
         # Obtiene usuario por nombre de usuario
         user = self.usuario_repository.get_by_nombre_usuario(login_data.nombre_usuario)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales inválidas"
-            )
+            raise InvalidCredentialsError("Credenciales inválidas")
         
         # Verifica contraseña
         if not verify_password(login_data.contrasena, user.contrasena_hash):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales inválidas"
-            )
+            raise InvalidCredentialsError("Credenciales inválidas")
         
         # Actualiza último login
         self.usuario_repository.update(user.id, {"ultimo_login": datetime.now()})
@@ -58,10 +52,7 @@ class LoginService:
         refresh_token = create_refresh_token({"sub": str(user.id)})
 
         if not access_token or not refresh_token:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error al generar los tokens"
-            )
+            raise TokenGenerationError("Error al generar los tokens")
 
         new_token = Token(
             usuario_id=user.id,

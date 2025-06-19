@@ -1,5 +1,4 @@
-from fastapi import HTTPException
-
+from app.core.exceptions.auth import InvalidCredentialsError
 from app.core.models.auth.user import Usuario
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
 from app.utils.security import verify_token, verify_token
@@ -10,28 +9,22 @@ class UserService:
         self.usuario_repository = usuario_repository
     
     def get_user_from_token(self, access_token: str) -> Usuario:
-        
+
         """
         Obtiene el usuario a partir del token de acceso.
         """
-        credentials_exception = HTTPException(
-            status_code=401,
-            detail="Credenciales inválidas",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-        
         # Verifica Token
         payload = verify_token(access_token)
         if not payload:
-            raise credentials_exception
+            raise InvalidCredentialsError("Token inválido o expirado")
         
         # Obtiene usuario por BD
         user_id = payload.get("sub")
         if user_id is None:
-            raise credentials_exception
+            raise InvalidCredentialsError("Token inválido, no se encontró el ID de usuario")
         
         user = self.usuario_repository.get_by_id(user_id)
         if user is None or not user.activo:
-            raise credentials_exception
+            raise InvalidCredentialsError("Usuario no encontrado o inactivo")
         
         return user

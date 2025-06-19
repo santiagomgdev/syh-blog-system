@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config.settings import settings
+from app.core.exceptions.handlers import setup_exception_handlers
 from app.modules.router.v1.router import router
 from app.modules.router.oauth.router import router as oauth_router
 # from app.core.database import create_tables
@@ -17,6 +18,9 @@ def create_app() -> FastAPI:
         debug=settings.DEBUG,
         description="Una plataforma de blogs moderna construida con FastAPI"
     )
+
+    # Manejo de excecciones globales
+    setup_exception_handlers(app)
     
     # Rutas iniciales
     setup_routes(app)
