@@ -16,7 +16,7 @@ def get_current_user_oauth(
     """
     Obtiene el usuario actual a partir del token de autenticación.
     """
-    user = user_service.get_current_user(token)
+    user = user_service.get_user_from_token(token)
     if not user:
         raise HTTPException(
             status_code=401,

@@ -1,19 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.modules.schemas.v1.user import UsuarioResponse
-from app.modules.services.user import UserService
-from app.modules.apis.dependencies import get_user_service, get_current_user
-from app.utils.security import oauth2_scheme
+from app.modules.apis.dependencies import get_current_user
 
 
 router = APIRouter()
 
 @router.get("/me", response_model=UsuarioResponse, status_code=200)
-def get_current_user(
+def get_me(
     current_user: UsuarioResponse = Depends(get_current_user)
 ) -> UsuarioResponse:
     """
-    Obtiene el usuario actual a partir del token de acceso.
+    Devuelve la información del usuario autenticado.
     """
     if current_user is None:
         raise HTTPException(
@@ -21,5 +19,4 @@ def get_current_user(
             detail="Token de acceso no proporcionado",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
     return current_user
