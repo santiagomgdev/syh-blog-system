@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from pydantic import ValidationError
 
-from app.core.exceptions.auth import RefreshTokenError
 from app.modules.schemas.v1.token import TokenBase
 from app.modules.schemas.v1.user import UsuarioCreate, UsuarioResponse, TokenResponse, UsuarioLogin
 from app.modules.services.refresh import RefreshTokenService
@@ -57,7 +55,10 @@ def refresh_token(
 
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:
-        raise RefreshTokenError("Refresh token no proporcionado en las cookies")
+        raise HTTPException(
+        status_code=401,
+        detail="No se pudo validar el refresh token"
+    )
 
     result = refresh_service.refresh_access_token(refresh_token)
 
