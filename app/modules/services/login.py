@@ -20,7 +20,7 @@ class LoginService:
         self.token_repository = token_repository
 
     def authenticate_user(self, login_data: UsuarioLogin) -> UsuarioResponse:
-        # Fetch user by email
+        # Obtiene usuario por nombre de usuario
         user = self.usuario_repository.get_by_nombre_usuario(login_data.nombre_usuario)
         if not user:
             raise HTTPException(
@@ -28,32 +28,32 @@ class LoginService:
                 detail="Credenciales inválidas"
             )
         
-        # Verify password
+        # Verifica contraseña
         if not verify_password(login_data.contrasena, user.contrasena_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Credenciales inválidas"
             )
         
-        # Update last login
+        # Actualiza último login
         self.usuario_repository.update(user.id, {"ultimo_login": datetime.now()})
         
         return UsuarioResponse.model_validate(user)
     
     def login(self, login_data: UsuarioLogin) -> TokenResponse:
-        # Authenticate user
+        # Autentica usuario
         user = self.authenticate_user(login_data)
 
-        self.token_repository.revoke_user_token(user.id)  # Revoke any existing tokens
+        self.token_repository.revoke_user_token(user.id)  # Revoca cualquier token existente
         
-        # Create token payload
+        # Crear el payload del token
         token_data = {
             "sub": str(user.id),  # subject (user_id)
             "email": user.correo,
             "username": user.nombre_usuario
         }
         
-        # Generate tokens
+        # Genera tokens
         access_token = create_access_token(token_data)
         refresh_token = create_refresh_token({"sub": str(user.id)})
 
@@ -71,7 +71,6 @@ class LoginService:
 
         self.token_repository.create(new_token)
         
-        # Return response
         return TokenResponse(
             access_token=access_token,
             refresh_token=refresh_token,

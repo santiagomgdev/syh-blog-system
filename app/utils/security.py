@@ -22,11 +22,11 @@ def generate_salt() -> str:
     return salt
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its bcrypt hash."""
+    """Verifica si la contraseña en texto plano coincide con el hash almacenado"""
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Create JWT access token."""
+    """Crea el JWT access token"""
     to_encode = data.copy()
     
     if expires_delta:
@@ -39,7 +39,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     return encoded_jwt
 
 def create_refresh_token(data: dict) -> str:
-    """Create JWT refresh token."""
+    """Crea el JWT refresh token"""
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
     
@@ -48,7 +48,7 @@ def create_refresh_token(data: dict) -> str:
     return encoded_jwt
 
 def verify_token(token: str) -> Optional[dict]:
-    """Verify JWT token and return payload."""
+    """Verifica el JWT y devuelve el payload si es válido"""
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload

@@ -31,10 +31,10 @@ def setup_routes(app: FastAPI) -> None:
         return {
             "message": f"Bienvenido a {settings.APP_NAME}",
             "version": settings.VERSION,
-            "status": "running"
+            "status": "en ejecución"
         }
     
     @app.get("/health")
     async def health_check():
-        """Health check endpoint"""
-        return {"status": "healthy"}
+        """Punto de comprobación de salud"""
+        return {"status": "saludable"}

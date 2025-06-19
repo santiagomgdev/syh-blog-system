@@ -76,7 +76,7 @@ def auth_user(
             value=result.refresh_token,
             # max_age=REFRESH_TOKEN_EXPIRE_MINUTES * 60,
             httponly=True,
-            secure=False,  # Set to False in development if not using HTTPS
+            secure=False,  # Establecer en False en desarrollo si no se utiliza HTTPS
             samesite="lax"
         )
 
@@ -124,7 +124,7 @@ def refresh_token(
     """
     credentials_exception = HTTPException(
         status_code=401,
-        detail="Could not validate refresh token"
+        detail="No se pudo validar el refresh token"
     )
 
     refresh_token = request.cookies.get("refresh_token")
@@ -138,7 +138,7 @@ def refresh_token(
             key="refresh_token",
             value=result.refresh_token,
             httponly=True,
-            secure=False,  # Set to False in development if not using HTTPS
+            secure=False,  # Establecer en False en desarrollo si no se utiliza HTTPS
             samesite="lax"
         )
 
