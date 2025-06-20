@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
+from app.core.exceptions.auth import TokenGenerationError
 from app.modules.schemas.v1.token import TokenBase
 from app.modules.schemas.v1.user import UsuarioCreate, UsuarioResponse, TokenResponse, UsuarioLogin
 from app.modules.services.refresh import RefreshTokenService
@@ -10,6 +11,7 @@ from app.modules.apis.dependencies import (
     get_login_service,
     get_refresh_token_service
 )
+from app.utils.security import create_access_token
 
 
 router = APIRouter()
@@ -21,7 +23,15 @@ def register_user(
 ) -> UsuarioResponse:
     """Endpoint para registrar un nuevo usuario"""
 
-    return register_service.register(user_data)
+    user = register_service.register(
+        username=user_data.nombre_usuario,
+        email=user_data.correo,
+        psw=user_data.contrasena
+    )
+
+    register_service.assign_default_role(user.id)
+
+    return UsuarioResponse.model_validate(user)
     
     
 @router.post("/login", response_model=TokenResponse, status_code=200)
@@ -32,18 +42,37 @@ def auth_user(
 ) -> TokenResponse:
     """Endpoint para autenticar un usuario y generar tokens"""
 
-    result = login_service.login(form_data)
+    user = login_service.authenticate_user(form_data.nombre_usuario, form_data.contrasena)
+
+    # Crear el payload del token
+    token_data = {
+        "sub": str(user.id),  # subject (user_id)
+        "email": user.correo,
+        "username": user.nombre_usuario
+    }
+    
+    # Genera token de acceso
+    access_token = create_access_token(token_data)
+
+    if not access_token:
+        raise TokenGenerationError("Error al generar token de acceso")
+
+    result = login_service.create_refresh_token_for_user(user)
 
     response.set_cookie(
         key="refresh_token",
-        value=result.refresh_token,
+        value=refresh_token,
         # max_age=REFRESH_TOKEN_EXPIRE_MINUTES * 60,
         httponly=True,
         secure=False,  # Establecer en False en desarrollo si no se utiliza HTTPS
         samesite="lax"
     )
 
-    return result
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=result.token_refresco,
+        user=UsuarioResponse.model_validate(user),
+    )
     
 @router.post("/refresh", response_model=TokenBase, status_code=200)
 def refresh_token(
@@ -60,14 +89,17 @@ def refresh_token(
         detail="No se encontró refresh token en las cookies"
     )
 
-    result = refresh_service.refresh_access_token(refresh_token)
+    access_token = refresh_service.refresh_access_token(refresh_token)
 
     response.set_cookie(
         key="refresh_token",
-        value=result.refresh_token,
+        value=refresh_token,
         httponly=True,
         secure=False,  # Establecer en False en desarrollo si no se utiliza HTTPS
         samesite="lax"
     )
 
-    return result
+    return TokenBase(
+        access_token=access_token,
+        refresh_token=refresh_token,
+    )

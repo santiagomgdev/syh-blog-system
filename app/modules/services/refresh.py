@@ -2,7 +2,6 @@ from app.core.exceptions.auth import RefreshTokenError, TokenExpiredError, Token
 from app.core.exceptions.user import UserNotFoundError
 from app.modules.repository.adapter.token_repository_interface import TokenRepositoryInterface
 from app.modules.repository.adapter.user_repository_interface import UsuarioRepositoryInterface
-from app.modules.schemas.v1.token import TokenBase
 from app.utils.security import create_access_token, verify_token
 
 
@@ -13,7 +12,7 @@ class RefreshTokenService:
         self.token_repository = token_repository
         self.user_repository = user_repository
 
-    def refresh_access_token(self, refresh_token: str) -> TokenBase:
+    def refresh_access_token(self, refresh_token: str) -> str:
         """
         Genera un nuevo access token usando un refresh token válido
         """
@@ -43,7 +42,5 @@ class RefreshTokenService:
         if not new_access_token:
             raise TokenGenerationError("Error al generar el nuevo access token")
         
-        return TokenBase(
-            access_token=new_access_token,
-            refresh_token=refresh_token,
-        )
+        return new_access_token
+            
