@@ -57,7 +57,7 @@ def refresh_token(
     if not refresh_token:
         raise HTTPException(
         status_code=401,
-        detail="No se pudo validar el refresh token"
+        detail="No se encontró refresh token en las cookies"
     )
 
     result = refresh_service.refresh_access_token(refresh_token)
