@@ -36,7 +36,7 @@ class LoginService:
     
     def create_refresh_token_for_user(self, user: Usuario) -> Token:
         # Revoca cualquier token existente del usuario
-        self.token_repository.revoke_user_token(user.id)  # Revoca cualquier token existente
+        self.token_repository.revoke_user_token(user.id)
         
         # Genera token de refresco
         refresh_token = create_refresh_token({"sub": str(user.id)})

@@ -9,10 +9,10 @@ class UserService:
         self.usuario_repository = usuario_repository
     
     def get_user_from_token(self, access_token: str) -> Usuario:
-
         """
         Obtiene el usuario a partir del token de acceso.
         """
+        
         # Verifica Token
         payload = verify_token(access_token)
         if not payload:

@@ -13,6 +13,7 @@ class RegisterService:
 
     def register(self, username: str, email: str, psw: str) -> Usuario:
         """Registra un nuevo usuario en el sistema."""
+        
         existing_user = self.usuario_repository.get_by_nombre_usuario(username)
         if existing_user:
             raise UserAlreadyExistsError("El nombre de usuario ya está en uso")
